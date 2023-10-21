@@ -19,7 +19,6 @@ params = {}
 params['chartbox'] = {}
 d_rows = None
 csvfile = {}
-chartDataframe = {}
 
 # データ取得
 def get_jsondata():
@@ -32,53 +31,34 @@ def get_dnolist(df_json):
     dno_list = df_json['dno'].tolist()
     return dno_list
 
-# 全データフレーム生成
-def get_dataframe_all(params):
-    #初期設定
-    data_json = {}
-    df = {}
-    df_all = pd.DataFrame()
-
+# データフレーム生成
+def create_dataframe(params):
     # データ取得
     data = get_jsondata()
 
     # json → データフレーム
     df_json = pd.DataFrame(data)
 
-    # dnoリスト
-    dno_list = df_json['dno'].tolist()
-
-    # 繰り返し
-    for n in range(len(dno_list)):
-        # データのみを取り出し
-        data_json[n] = df_json[df_json['dno'] == dno_list[n]]['data'].values
+    for n in range(int(params['elements'])):
+        data[n] = df_json[df_json['dno'] == int(456331) ]['data'].values
         # データフレーム
-        df[n] = pd.DataFrame(data_json[n][0])
-        # インデックス指定
-        df[n] = df[n].set_index('datetime')
-        # リネーム（data→dno）
-        df[n] = df[n].rename(columns={'data': str(dno_list[n])})
-        # 結合
-        df_all = pd.concat([df_all, df[n]], axis=1)
+        df[n] = pd.DataFrame(data[n][0])
 
-    return df_all
+    print(df)
+
+    return df
 
 # グラフデータ生成
 def create_chart(params):
     try:
 
-        # 全データフレーム
-        df_all = get_dataframe_all(params)
+        for n in range(int(params['elements'])):
+            print(params['chartbox'][n])
 
-        # チャートごとのdno
-        chartboxs = params['chartbox']
-        
-        # 繰り返し
-        for n in range(len(chartboxs)):
-            # チャートごとのデータフレーム生成
-            chartDataframe[n] = df_all[chartboxs[n]]
+        # データフレーム生成
+        df = create_dataframe(params)
 
-        # グラフのベース
+        # データフレーム生成
         d_rows = int(np.ceil(params['elements'] / params['columns']))
         fig = go.Figure().set_subplots(d_rows, params['columns'])
         
@@ -92,25 +72,17 @@ def create_chart(params):
             f_col = int(n+1)
             if f_col > params['columns']:
                 f_col = int(f_col - params['columns'])
-            
-            # データフレーム
-            df = chartDataframe[n]
-            df.reset_index(inplace= True)
-            df = df.rename(columns={'index': 'datetime'})
-            
-            # 繰り返し
-            for dno in chartboxs[n]:
-                # add
-                fig.add_trace(
-                    go.Line(
-                        x=df['datetime'].tolist(),
-                        y=df[dno].tolist(),
-                        name='data_' + str(dno)
-                    ),
-                    row = f_row,
-                    col = f_col
-                )
 
+            # add
+            fig.add_trace(
+                go.Line(
+                    x=df[n]['datetime'].tolist(),
+                    y=df[n]['data'].tolist(),
+                    name='TITLE_' + str(n)
+                ),
+                row = f_row,
+                col = f_col
+            )
         # layout
         fig.update_layout(
             margin = dict(l=60, r=60, t=60, b=60),
@@ -143,10 +115,6 @@ with tab1:
                                     value=2,
                                     step=1
                                 )
-            params['scale'] = st.radio(
-                                    'scale',
-                                    ['月','日','分']
-                                )
         with col_1_2:
             st.empty()
         params['elements'] = st.number_input(
@@ -161,18 +129,17 @@ with tab1:
             with st.container():
                 params['chartbox'][n] = st.multiselect(
                                             'ChartBox_' + str(n+1),
-                                            ['456331', '456728', '454322', '457242'], ['456331']
+                                            [456331, 456728, 454322, 457242], [456331]
                                         )
 
 with tab2:
-    df_all = get_dataframe_all(params)
-    chartboxs = params['chartbox']
-    for n in range(len(chartboxs)):
+    for n in range(int(params['elements'])):
+        df = create_dataframe(params)
         with st.container():
             col_2_1, col_2_2 = st.columns(2)
             with col_2_1:
                 st.write('データ ' + str(n+1))
-                st.dataframe(df_all[chartboxs[n]])
+                st.dataframe(df[n])
             with col_2_2:
                 csvfile[n] = ''
                 st.download_button(label='Data Download', 
