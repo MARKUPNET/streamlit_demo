@@ -1,5 +1,5 @@
 import json
-import datetime
+import datetime as dt
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -17,7 +17,7 @@ st.set_page_config(
 df = {}
 data = {}
 params = {}
-params['chartbox'] = {}
+params['graph_dno'] = {}
 d_rows = None
 csvfile = {}
 chartDataframe = {}
@@ -71,20 +71,20 @@ def create_chart(params):
         # 全データフレーム
         df_all = get_dataframe_all(params)
 
-        # チャートごとのdno
-        chartboxs = params['chartbox']
+        # グラフごとのdno
+        dnolist = params['graph_dno']
         
         # 繰り返し
-        for n in range(len(chartboxs)):
+        for n in range(len(dnolist)):
             # チャートごとのデータフレーム生成
-            chartDataframe[n] = df_all[chartboxs[n]]
+            chartDataframe[n] = df_all[dnolist[n]]
 
         # グラフのベース
-        d_rows = int(np.ceil(params['elements'] / params['columns']))
+        d_rows = int(np.ceil(params['graph_multiple'] / params['columns']))
         fig = go.Figure().set_subplots(d_rows, params['columns'])
         
         # 繰り返し
-        for n in range(int(params['elements'])):
+        for n in range(int(params['graph_multiple'])):
 
             # row
             f_row = int(np.ceil(int(n+1) / params['columns'] ))
@@ -100,7 +100,7 @@ def create_chart(params):
             df = df.rename(columns={'index': 'datetime'})
             
             # 繰り返し
-            for dno in chartboxs[n]:
+            for dno in dnolist[n]:
                 # add
                 fig.add_trace(
                     go.Line(
@@ -115,7 +115,7 @@ def create_chart(params):
         # layout
         fig.update_layout(
             margin = dict(l=60, r=60, t=60, b=60),
-            height = 800,
+            height = int(params['height']),
             paper_bgcolor = "rgba(255, 255, 255, 0.1)",
             showlegend = True
         )
@@ -141,12 +141,16 @@ with tab1:
     with col1:
         col_1_1, col_1_2 = st.columns(2)
         with col_1_1:
-            min_date = datetime.date(1900, 1, 1)
-            max_date = datetime.date(2100, 12, 31)
-            d = st.date_input('範囲', datetime.date(1998, 2, 16), min_value=min_date, max_value=max_date)
+            # 今日の日付
+            today = dt.date.today()
+            
+            # n日前の日付
+            n = 10
+            n_days_ago = today - dt.timedelta(days=n)
 
-            params['scale'] = st.radio(
-                                    'scale',
+            params['datetime_start'] = st.date_input('datetime-start', value=n_days_ago)
+            params['axis_x'] = st.radio(
+                                    'axis-x',
                                     ['月','日','分'],
                                     horizontal=True
                                 )
@@ -157,28 +161,30 @@ with tab1:
                                     value=2,
                                     step=1
                                 )
-            params['elements'] = st.number_input(
-                                    'elements',
+            params['graph_multiple'] = st.number_input(
+                                    'graph-multiple',
                                     min_value=1,
                                     max_value=10,
                                     value=2,
                                     step=1
                                 )
+            params['height'] = st.text_input('height', value=400)
         with col_1_2:
+            params['datetime_end'] = st.date_input('datetime-end', value=today)
             st.empty()
     with col2:
-        for n in range(int(params['elements'])):
+        for n in range(int(params['graph_multiple'])):
             with st.container():
-                params['chartbox'][n] = st.multiselect(
-                                            'ChartBox_' + str(n+1),
+                params['graph_dno'][n] = st.multiselect(
+                                            'Graph_' + str(n+1),
                                             ['456331', '456728', '454322', '457242'], ['456331']
                                         )
 
 with tab2:
     df_all = get_dataframe_all(params)
-    chartboxs = params['chartbox']
-    for n in range(len(chartboxs)):
-        df = df_all[chartboxs[n]]
+    dnolist = params['graph_dno']
+    for n in range(len(dnolist)):
+        df = df_all[dnolist[n]]
         with st.container():
             col_2_1, col_2_2 = st.columns(2)
             with col_2_1:
