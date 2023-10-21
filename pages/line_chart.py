@@ -20,12 +20,20 @@ params['chartbox'] = {}
 d_rows = None
 csvfile = {}
 
-with open('/Users/first/Site/SampleCode/streamlit_demo/data_dir/sampledata/sattool.json') as f:
-    data = json.load(f)
-    df_json = pd.DataFrame(data)
+# データ取得
+def open_data():
+    with open('/Users/matsuitatsuya/Site/Sample/streamlit_demo/data_dir/sampledata/sattool.json') as f:
+        data = json.load(f)
+        df_json = pd.DataFrame(data)
+    return df_json
 
 # データフレーム生成
 def create_dataframe(params):
+    # データ取得
+    df_json = open_data()
+    dno_list = df_json['dno'].tolist()
+    print(dno_list)
+
     for n in range(int(params['elements'])):
         data[n] = df_json[df_json['dno'] == int(456331) ]['data'].values
         # データフレーム
@@ -52,7 +60,7 @@ def create_chart(params):
 
             # add
             fig.add_trace(
-                go.Bar(
+                go.Line(
                     x=df[n]['datetime'].tolist(),
                     y=df[n]['data'].tolist(),
                     name='TITLE_' + str(n)
