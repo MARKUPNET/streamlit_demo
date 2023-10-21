@@ -1,4 +1,5 @@
 import json
+import datetime
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -34,7 +35,7 @@ def get_dnolist(df_json):
 
 # 全データフレーム生成
 def get_dataframe_all(params):
-    #初期設定
+    # 初期設定
     data_json = {}
     df = {}
     df_all = pd.DataFrame()
@@ -114,7 +115,7 @@ def create_chart(params):
         # layout
         fig.update_layout(
             margin = dict(l=60, r=60, t=60, b=60),
-            height = 400,
+            height = 800,
             paper_bgcolor = "rgba(255, 255, 255, 0.1)",
             showlegend = True
         )
@@ -128,7 +129,11 @@ def view_chart(params):
     fig = create_chart(params)
     st.plotly_chart(fig, use_container_width=True)
 
-#メイン
+# CSV生成
+def convert_df(df):
+    return df.to_csv().encode('utf-8')
+
+# メイン
 tab1, tab2, tab3 = st.tabs(['param', 'dataframe', 'visualize'])
 
 with tab1:
@@ -136,6 +141,15 @@ with tab1:
     with col1:
         col_1_1, col_1_2 = st.columns(2)
         with col_1_1:
+            min_date = datetime.date(1900, 1, 1)
+            max_date = datetime.date(2100, 12, 31)
+            d = st.date_input('範囲', datetime.date(1998, 2, 16), min_value=min_date, max_value=max_date)
+
+            params['scale'] = st.radio(
+                                    'scale',
+                                    ['月','日','分'],
+                                    horizontal=True
+                                )
             params['columns'] = st.number_input(
                                     'columns',
                                     min_value=1,
@@ -143,19 +157,15 @@ with tab1:
                                     value=2,
                                     step=1
                                 )
-            params['scale'] = st.radio(
-                                    'scale',
-                                    ['月','日','分']
+            params['elements'] = st.number_input(
+                                    'elements',
+                                    min_value=1,
+                                    max_value=10,
+                                    value=2,
+                                    step=1
                                 )
         with col_1_2:
             st.empty()
-        params['elements'] = st.number_input(
-                                'elements',
-                                min_value=1,
-                                max_value=10,
-                                value=2,
-                                step=1
-                            )
     with col2:
         for n in range(int(params['elements'])):
             with st.container():
@@ -168,14 +178,15 @@ with tab2:
     df_all = get_dataframe_all(params)
     chartboxs = params['chartbox']
     for n in range(len(chartboxs)):
+        df = df_all[chartboxs[n]]
         with st.container():
             col_2_1, col_2_2 = st.columns(2)
             with col_2_1:
                 st.write('データ ' + str(n+1))
-                st.dataframe(df_all[chartboxs[n]])
+                st.dataframe(df)
             with col_2_2:
-                csvfile[n] = ''
-                st.download_button(label='Data Download', 
+                csvfile[n] = convert_df(df)
+                st.download_button(label='Data Download(CSV)', 
                                         data=csvfile[n], 
                                         file_name='data_'+str(n+1)+'.csv',
                                         mime='text/csv',
