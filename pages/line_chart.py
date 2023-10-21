@@ -18,8 +18,9 @@ data = {}
 params = {}
 params['chartbox'] = {}
 d_rows = None
+csvfile = {}
 
-with open('/Users/first/Site/streamlit/data_dir/sampledata/sattool.json') as f:
+with open('/Users/first/Site/SampleCode/streamlit_demo/data_dir/sampledata/sattool.json') as f:
     data = json.load(f)
     df_json = pd.DataFrame(data)
 
@@ -111,7 +112,18 @@ with tab1:
 with tab2:
     df = create_dataframe(params)
     for n in range(int(params['elements'])):
-        st.dataframe(df[n])
+        with st.container():
+            col_2_1, col_2_2 = st.columns(2)
+            with col_2_1:
+                st.write('データ ' + str(n+1))
+                st.dataframe(df[n])
+            with col_2_2:
+                csvfile[n] = ''
+                st.download_button(label='Data Download', 
+                                        data=csvfile[n], 
+                                        file_name='data_'+str(n+1)+'.csv',
+                                        mime='text/csv',
+                                    )
 
 with tab3:
     # グラフ表示
