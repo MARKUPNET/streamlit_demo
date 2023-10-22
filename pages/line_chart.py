@@ -93,6 +93,8 @@ def create_chart(params):
             f_col = int(n+1)
             if f_col > params['columns']:
                 f_col = int(f_col - params['columns'])
+            if params['columns'] == 1:
+                f_col = 1
             
             # データフレーム
             df = chartDataframe[n]
