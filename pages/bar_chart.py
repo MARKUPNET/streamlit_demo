@@ -62,7 +62,6 @@ def get_dataframe_all(params):
         df[n] = df[n].rename(columns={'data': str(dno_list[n])})
         # 結合
         df_all = pd.concat([df_all, df[n]], axis=1)
-
     return df_all
 
 # グラフデータ生成
@@ -112,6 +111,7 @@ def create_chart(params):
                     row = f_row,
                     col = f_col
                 )
+            
             # layout
             fig.update_layout(
                 margin = dict(l=60, r=60, t=60, b=60),
