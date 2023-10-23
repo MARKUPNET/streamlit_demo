@@ -112,6 +112,27 @@ def create_chart(params):
                 col = f_col
             )
 
+            # 近似直線
+            if approximation:
+                xx = df[dnolist[n][0]].tolist()
+                yy = df[dnolist[n][1]].tolist()
+                # 近似直線の式の　a と b が入ったタプルを得る
+                p = np.polyfit(xx, yy, 1)
+                
+                # 一次関数の式のオブジェクトを生成する
+                f = np.poly1d(p)
+
+                fig.add_trace(
+                    go.Scatter(
+                        x=xx,
+                        y=f(xx),
+                        mode='lines'
+                    ),
+                    row = f_row,
+                    col = f_col
+                )
+
+
         # layout
         fig.update_layout(
             margin = dict(l=60, r=60, t=60, b=60),
@@ -200,5 +221,8 @@ with tab2:
                                     )
 
 with tab3:
+    # 近似直線ボタン
+    approximation = st.checkbox('近似直線を表示する', value=False, key='approximation')
+
     # グラフ表示
     view_chart(params)
