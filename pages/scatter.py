@@ -101,11 +101,14 @@ def create_chart(params):
             df.reset_index(inplace= True)
             df = df.rename(columns={'index': 'datetime'})
 
+            xx = df[dnolist[n][0]].tolist()
+            yy = df[dnolist[n][1]].tolist()
+
             # add
             fig.add_trace(
                 go.Scatter(
-                    x=df[dnolist[n][0]].tolist(),
-                    y=df[dnolist[n][1]].tolist(),
+                    x=xx,
+                    y=yy,
                     mode='markers'
                 ),
                 row = f_row,
@@ -114,8 +117,6 @@ def create_chart(params):
 
             # 近似直線
             if approximation:
-                xx = df[dnolist[n][0]].tolist()
-                yy = df[dnolist[n][1]].tolist()
                 # 近似直線の式の　a と b が入ったタプルを得る
                 p = np.polyfit(xx, yy, 1)
                 
