@@ -18,7 +18,7 @@ df = {}
 data = {}
 params = {}
 params['graph_dno'] = {}
-params['barmone'] = {}
+params['barmone'] = ''
 d_rows = None
 csvfile = {}
 chartDataframe = {}
@@ -98,7 +98,15 @@ def create_chart(params):
             
             # データフレーム
             df = chartDataframe[n]
-            
+
+            if stacked_percent:
+                df = chartDataframe[n]
+                df = df.T
+                df = df/df.sum()*100
+                df = df.T
+                print("-------------------------")
+                print(df)
+
             # 繰り返し
             for dno in dnolist[n]:
                 # add
@@ -118,7 +126,7 @@ def create_chart(params):
                 height = int(params['height']),
                 paper_bgcolor = "rgba(255, 255, 255, 0.1)",
                 showlegend = True,
-                barmode=params['barmone'][n]
+                barmode=params['barmone']
             )
         return fig
     except:
@@ -159,14 +167,14 @@ with tab1:
                                     'columns',
                                     min_value=1,
                                     max_value=3,
-                                    value=2,
+                                    value=1,
                                     step=1
                                 )
             params['graph_multiple'] = st.number_input(
                                     'graph-multiple',
                                     min_value=1,
                                     max_value=10,
-                                    value=2,
+                                    value=1,
                                     step=1
                                 )
             params['height'] = st.text_input('height', value=400)
@@ -178,12 +186,7 @@ with tab1:
             with st.container():
                 params['graph_dno'][n] = st.multiselect(
                                             'Graph_' + str(n+1),
-                                            ['456331', '456728', '454322', '457242'], ['456331']
-                                        )
-                params['barmone'][n] = st.radio(
-                                            'Graph_' + str(n+1) + '_mode',
-                                            ['stack', 'group'],
-                                            horizontal=True
+                                            ['456331', '456728', '454322', '457242'], ['456331', '456728', '454322', '457242']
                                         )
 
 with tab2:
@@ -205,5 +208,13 @@ with tab2:
                                     )
 
 with tab3:
+    #stacked
+    params['barmone'] = st.radio(
+                                'Graph_' + str(n+1) + '_mode',
+                                ['stack', 'group'],
+                                horizontal=True
+                            )
+    #stacked_percent
+    stacked_percent = st.checkbox('積み上げグラフ（%）', key='stacked')
     # グラフ表示
     view_chart(params)
