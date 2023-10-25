@@ -320,7 +320,7 @@ primaryColor = "#ff0000"
 
 # Background color for the main content area.
 # The value below was set in C:\Users\first\Site\SampleCode\streamlit_demo\.streamlit\config.toml
-backgroundColor = "#231919"
+backgroundColor = "#313131"
 
 # Background color used for the sidebar and most interactive widgets.
 # The value below was set in C:\Users\first\Site\SampleCode\streamlit_demo\.streamlit\config.toml
