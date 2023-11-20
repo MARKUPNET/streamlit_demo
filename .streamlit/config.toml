@@ -198,7 +198,7 @@
 
 # Default: 8501
 # The value below was set in C:\Users\first\Site\SampleCode\streamlit_demo\.streamlit\config.toml
-port = 80
+port = 8880
 
 # The base path for the URL where Streamlit should be served from.
 
