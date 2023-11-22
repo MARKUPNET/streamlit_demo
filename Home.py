@@ -51,6 +51,7 @@ df
 df.query('品名 in ["商品１"]' ,inplace=True)
 
 df_select = df.loc[:, ['Price']]
+df_select.rename(columns={'Price': '商品１'} ,inplace=True)
 
 df_select
 st.line_chart(df_select)
