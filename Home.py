@@ -53,5 +53,29 @@ df.query('品名 in ["商品１"]' ,inplace=True)
 df_select = df.loc[:, ['Price']]
 df_select.rename(columns={'Price': '商品１'} ,inplace=True)
 
+
+
+# TEST
+list = []
+parent = []
+txt = "TEST_TEXT"
+
+number = 8
+cols = 3
+
+rows = math.floor(np.ceil(number / cols))
+remainder = number % cols
+
+for a in range(rows):
+    if a == rows - 1:
+        list.append(remainder)
+    else:
+        list.append(cols)
+
+for n in range(len(list)):
+    child = []
+    for i in range(list[n]):
+        child.append(txt)
+    parent.append(child)
 df_select
 st.line_chart(df_select)
