@@ -23,11 +23,7 @@ df = pd.DataFrame({"number": ['BE2250', 'BE2260', 'BE2270', 'BE2280', 'BE2290', 
                    "2023-11-01": [5.5, 4.2, -1.2, np.nan, np.nan, np.nan],
                    "2023-12-01": [5, np.nan, 4, 1, np.nan, 3]})
 
-df
-
 df.fillna(df.iloc[:, 1:].fillna(0), inplace=True)
-
-df
 
 df = df.melt(id_vars=["number", "品名", "単価"], 
                value_vars=["2023-01-01",
@@ -47,13 +43,14 @@ df = df.melt(id_vars=["number", "品名", "単価"],
 
 df.set_index("DATETIME",inplace=True)
 
-df
+st.dataframe(df)
 
 df.query('品名 in ["商品１"]' ,inplace=True)
 
 df_select = df.loc[:, ['Price']]
 df_select.rename(columns={'Price': '商品１'} ,inplace=True)
 
+st.dataframe(df_select)
 
 
 # TEST
@@ -78,7 +75,6 @@ for n in range(len(list)):
     for i in range(list[n]):
         child.append(txt)
     parent.append(child)
-df_select
 st.line_chart(df_select)
 
 # カラーピッカー

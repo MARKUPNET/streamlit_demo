@@ -1,21 +1,28 @@
 # streamlit_demo
 グラフの表示などのデモ
 
-# 仮想環境
+## 仮想環境
 ```
 py -m venv venv_tool
 venv_tool\Scripts\activate
 ```
-# pipアップグレード
+
+## セットアップツールのアップグレード
 ```
-pip install --upgrade pip
-```
-# モジュールインストール
-```
-pip install -r requirement.txt
+py -m pip install -U setuptools
 ```
 
-# 起動
+## pipアップグレード
+```
+py -m pip install --upgrade pip
+```
+
+## モジュールインストール
+```
+py -m pip install -r requirements.txt
+```
+
+## 起動
 ```
 streamlit run Home.py
 ```
