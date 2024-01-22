@@ -79,3 +79,12 @@ for n in range(len(list)):
     parent.append(child)
 df_select
 st.line_chart(df_select)
+
+# カラーピッカー
+color_code = {}
+dno_list = ['123456','456789','789123']
+color_list = ['#ff0000','#00ff00', '#0000ff']
+for i, dno in enumerate(dno_list):
+    st.write(str(i))
+    color_code[i] = st.color_picker('カラーピッカー', color_list[i], key='color_picker_'+str(i))
+    st.write(color_code[i])
