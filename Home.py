@@ -5,6 +5,55 @@ import math
 
 import plotly.figure_factory as ff
 
+st.set_page_config(layout="wide")
+
+dno_current = ['445566', '556677', '112233']
+
+number = st.number_input(
+                        'グラフ数',
+                        value=len(dno_current),
+                        step=1
+                        )
+
+dno = {}
+color = {}
+name = {}
+dno_list = ['000000' for i in range(number)]
+color_list = [None for i in range(number)]
+name_list = ['nothing' for i in range(number)]
+
+for i in range(number):
+    if i < len(dno_current):
+        dno_list[i] = dno_current[i]
+    else:
+        dno_list[i] = '000000'
+
+col1, col2 = st.columns(2)
+with col1:
+    for i, item in enumerate(dno_list):
+        dno[i] = st.text_input(
+                            'DNO',
+                            dno_list[i],
+                            key='dno_'+str(i)
+                            )
+        color[i] = st.color_picker(
+                                '色',
+                                color_list[i],
+                                key='color_'+str(i)
+                                )
+        name[i] = st.text_input(
+                            'NAME',
+                            name_list[i],
+                            key='name_'+str(i)
+                            )
+
+with col2:
+    st.write(dno)
+    st.write(color)
+    st.write(name)
+
+
+
 st.title('Sample')
 
 df = pd.DataFrame({"number": ['BE2250', 'BE2260', 'BE2270', 'BE2280', 'BE2290', 'BE2300'],
