@@ -15,22 +15,32 @@ number = st.number_input(
                         step=1
                         )
 
+dno_list = []
+check_dno = {}
 dno = {}
 color = {}
 name = {}
-dno_list = ['000000' for i in range(number)]
-color_list = [None for i in range(number)]
-name_list = ['nothing' for i in range(number)]
 
-for i in range(number):
-    if i < len(dno_current):
-        dno_list[i] = dno_current[i]
-    else:
-        dno_list[i] = '000000'
 
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
 with col1:
-    for i, item in enumerate(dno_list):
+    check_dno['445566'] = st.checkbox('445566', value=True, key='445566')
+    check_dno['556677'] = st.checkbox('556677', value=True, key='556677')
+    check_dno['112233'] = st.checkbox('112233', value=True, key='112233')
+    check_dno['223344'] = st.checkbox('223344', value=False, key='223344')
+    check_dno['334455'] = st.checkbox('334455', value=False, key='334455')
+    check_dno['667788'] = st.checkbox('667788', value=False, key='667788')
+
+    # TODO
+    dno_list = list(check_dno.keys())
+    print(dno_list)
+
+    check_dno_number = list(check_dno.values()).count(True)
+    color_list = [None for i in range(check_dno_number)]
+    name_list = ['nothing' for i in range(check_dno_number)]
+
+with col2:
+    for i in range(check_dno_number):
         dno[i] = st.text_input(
                             'DNO',
                             dno_list[i],
@@ -47,90 +57,12 @@ with col1:
                             key='name_'+str(i)
                             )
 
-with col2:
+with col3:
     st.write(dno)
     st.write(color)
     st.write(name)
 
 
 
-st.title('Sample')
-
-df = pd.DataFrame({"number": ['BE2250', 'BE2260', 'BE2270', 'BE2280', 'BE2290', 'BE2300'],
-                   "品名": ["商品１", "商品２", '商品３', '商品４', '商品５', '商品６'],
-                   "単価": ["200", "210", '220', np.nan, '240', '250'],
-                   "2023-01-01": [5.5, 4.2, -1.2, np.nan, np.nan, np.nan],
-                   "2023-02-01": [5.5, 4.2, -1.2, np.nan, np.nan, np.nan],
-                   "2023-03-01": [5.5, 4.2, -1.2, np.nan, np.nan, np.nan],
-                   "2023-04-01": [5.5, 4.2, -1.2, np.nan, np.nan, np.nan],
-                   "2023-05-01": [5.5, 4.2, -1.2, np.nan, np.nan, np.nan],
-                   "2023-06-01": [5.5, 4.2, -1.2, np.nan, np.nan, np.nan],
-                   "2023-07-01": [5.5, 4.2, -1.2, np.nan, np.nan, np.nan],
-                   "2023-08-01": [5.5, 4.2, -1.2, np.nan, np.nan, np.nan],
-                   "2023-09-01": [5.5, 4.2, -1.2, np.nan, np.nan, np.nan],
-                   "2023-10-01": [5.5, 4.2, -1.2, np.nan, np.nan, np.nan],
-                   "2023-11-01": [5.5, 4.2, -1.2, np.nan, np.nan, np.nan],
-                   "2023-12-01": [5, np.nan, 4, 1, np.nan, 3]})
-
-df.fillna(df.iloc[:, 1:].fillna(0), inplace=True)
-
-df = df.melt(id_vars=["number", "品名", "単価"], 
-               value_vars=["2023-01-01",
-                           "2023-02-01",
-                           "2023-03-01",
-                           "2023-04-01",
-                           "2023-05-01",
-                           "2023-06-01",
-                           "2023-07-01",
-                           "2023-08-01",
-                           "2023-09-01",
-                           "2023-10-01",
-                           "2023-11-01",
-                           "2023-12-01"],
-                           var_name="DATETIME",
-                           value_name="Price")
-
-df.set_index("DATETIME",inplace=True)
-
-st.dataframe(df)
-
-df.query('品名 in ["商品１"]' ,inplace=True)
-
-df_select = df.loc[:, ['Price']]
-df_select.rename(columns={'Price': '商品１'} ,inplace=True)
-
-st.dataframe(df_select)
 
 
-# TEST
-list = []
-parent = []
-txt = "TEST_TEXT"
-
-number = 8
-cols = 3
-
-rows = math.floor(np.ceil(number / cols))
-remainder = number % cols
-
-for a in range(rows):
-    if a == rows - 1:
-        list.append(remainder)
-    else:
-        list.append(cols)
-
-for n in range(len(list)):
-    child = []
-    for i in range(list[n]):
-        child.append(txt)
-    parent.append(child)
-st.line_chart(df_select)
-
-# カラーピッカー
-color_code = {}
-dno_list = ['123456','456789','789123']
-color_list = ['#ff0000','#00ff00', '#0000ff']
-for i, dno in enumerate(dno_list):
-    st.write(str(i))
-    color_code[i] = st.color_picker('カラーピッカー', color_list[i], key='color_picker_'+str(i))
-    st.write(color_code[i])

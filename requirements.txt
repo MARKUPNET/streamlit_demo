@@ -2,9 +2,7 @@ streamlit
 numpy
 pandas
 plotly
-matplotlib
 requests
 beautifulsoup4
 lxml
 selenium
-streamlit-elements==0.1.*
